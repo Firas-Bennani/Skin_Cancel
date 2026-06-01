@@ -6,7 +6,8 @@ learning model. It ships with a custom, hand-built **dark-themed UI** (Tailwind
 CSS) and stores every analysis against a patient record.
 
 ---
-
+## Demo video and screenshoots 
+[please consult this link] (https://drive.google.com/drive/folders/1QUSUIYY4xY-MAzHwywwpmHuwpTGcdYmq?usp=sharing)
 ## Features
 
 - **Doctor login** — session-based authentication (default `admin` / `admin123`).
@@ -58,16 +59,16 @@ CSS) and stores every analysis against a patient record.
 
 ```
 Skin_Cancel/
-├── app.py                 # Flask app: routes, model inference, DB access, PDF export
-├── config.py              # Secret key, DB credentials, model path, class labels
-├── requirements.txt       # Pinned Python dependencies
+├── app.py                
+├── config.py              
+├── requirements.txt       
 ├── database/
 │   └── schema.sql         # CREATE TABLE statements + admin seed (see below)
 ├── model/
 │   └── vgg16_skin_cancer.h5   # NOT in repo — add your trained model here
 ├── static/
-│   └── uploads/           # Saved upload images (gitignored)
-└── templates/             # Jinja2 templates (Tailwind dark theme)
+│   └── uploads/           
+└── templates/             
     ├── base.html
     ├── login.html
     ├── dashboard.html
