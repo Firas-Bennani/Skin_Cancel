@@ -7,7 +7,7 @@ CSS) and stores every analysis against a patient record.
 
 ---
 ## Demo video and screenshoots 
-[please consult this link] (https://drive.google.com/drive/folders/1QUSUIYY4xY-MAzHwywwpmHuwpTGcdYmq?usp=sharing)
+[please consult this link](https://drive.google.com/drive/folders/1QUSUIYY4xY-MAzHwywwpmHuwpTGcdYmq?usp=sharing)
 ## Features
 
 - **Doctor login** — session-based authentication (default `admin` / `admin123`).
