@@ -1,0 +1,108 @@
+{% extends "base.html" %}
+{% block title %}New Analysis — SkinCancel{% endblock %}
+
+{% block content %}
+<div class="px-8 py-8">
+
+    <header class="border-b border-line pb-6">
+        <p class="eyebrow mb-2">Analysis</p>
+        <h1 class="text-2xl font-semibold tracking-tight text-fg">New analysis</h1>
+        <p class="text-sm text-muted mt-1.5">Upload a dermoscopy image for AI-assisted diagnosis.</p>
+    </header>
+
+    <div class="mt-8 grid grid-cols-1 lg:grid-cols-3 gap-6 max-w-5xl">
+
+        <!-- Form -->
+        <div class="lg:col-span-2">
+            <form method="POST" action="/predict" enctype="multipart/form-data" class="panel p-6 sm:p-8 space-y-7">
+
+                <div>
+                    <p class="eyebrow mb-4">Patient details</p>
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                        <div>
+                            <label class="field-label" for="patient-name">Patient name</label>
+                            <input type="text" name="name" id="patient-name" required class="field" placeholder="Full name">
+                        </div>
+                        <div>
+                            <label class="field-label" for="patient-age">Age</label>
+                            <input type="number" name="age" id="patient-age" required min="1" max="120" class="field" placeholder="Years">
+                        </div>
+                    </div>
+                </div>
+
+                <div class="border-t border-line pt-7">
+                    <p class="eyebrow mb-4">Dermoscopy image</p>
+                    <div id="drop-zone"
+                         onclick="document.getElementById('image-input').click()"
+                         class="group rounded-lg border border-dashed border-line-2 bg-ink-2 p-10 text-center cursor-pointer hover:border-accent/60 hover:bg-accent/[0.03] transition-colors">
+
+                        <div id="upload-placeholder">
+                            <div class="mx-auto mb-4 flex h-12 w-12 items-center justify-center rounded-lg border border-line bg-panel text-faint group-hover:text-accent group-hover:border-accent/30 transition-colors">
+                                <i class="fas fa-cloud-arrow-up text-lg"></i>
+                            </div>
+                            <p class="text-sm font-medium text-fg">Click to upload or drag &amp; drop</p>
+                            <p class="text-xs text-faint mt-1.5 font-mono uppercase tracking-[0.1em]">PNG · JPG · JPEG — max 16MB</p>
+                        </div>
+
+                        <div id="image-preview" class="hidden">
+                            <img id="preview-img" src="" class="max-h-56 mx-auto rounded-md ring-1 ring-line">
+                            <p id="file-name" class="text-sm text-muted mt-3 font-mono"></p>
+                            <p class="text-xs text-accent-soft mt-1">Click to change image</p>
+                        </div>
+
+                        <input type="file" id="image-input" name="image" accept=".png,.jpg,.jpeg" class="hidden" required>
+                    </div>
+                </div>
+
+                <button type="submit" class="btn-accent w-full py-3">
+                    <i class="fas fa-microscope"></i> Run analysis
+                </button>
+            </form>
+        </div>
+
+        <!-- Aside -->
+        <aside class="space-y-4">
+            <div class="panel p-5">
+                <p class="eyebrow mb-3">Conditions detected</p>
+                <ul class="space-y-2.5 text-sm">
+                    {% for c in ["Melanoma", "Basal Cell Carcinoma", "Actinic Keratoses", "Benign Keratosis", "Melanocytic Nevi", "Dermatofibroma", "Vascular Lesions"] %}
+                    <li class="flex items-center gap-2.5 text-muted">
+                        <span class="h-1 w-1 rounded-full bg-accent"></span>{{ c }}
+                    </li>
+                    {% endfor %}
+                </ul>
+            </div>
+            <div class="rounded-lg border border-amber-500/20 bg-amber-500/[0.06] p-4">
+                <div class="flex gap-3">
+                    <i class="fas fa-triangle-exclamation text-amber-400/80 mt-0.5"></i>
+                    <p class="text-xs leading-relaxed text-amber-200/80">
+                        Results are AI-assisted and must not replace professional medical judgment.
+                        Always confirm with a certified dermatologist.
+                    </p>
+                </div>
+            </div>
+        </aside>
+    </div>
+</div>
+
+<script>
+    const input       = document.getElementById('image-input');
+    const placeholder = document.getElementById('upload-placeholder');
+    const preview     = document.getElementById('image-preview');
+    const previewImg  = document.getElementById('preview-img');
+    const fileName    = document.getElementById('file-name');
+
+    input.addEventListener('change', function () {
+        if (this.files && this.files[0]) {
+            const reader = new FileReader();
+            reader.onload = e => {
+                previewImg.src  = e.target.result;
+                fileName.textContent = input.files[0].name;
+                placeholder.classList.add('hidden');
+                preview.classList.remove('hidden');
+            };
+            reader.readAsDataURL(this.files[0]);
+        }
+    });
+</script>
+{% endblock %}

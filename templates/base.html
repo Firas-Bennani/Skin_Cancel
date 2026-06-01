@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="en" class="antialiased">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}SkinCancel{% endblock %}</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        ink:      '#0a0c10',
+                        'ink-2':  '#0e1117',
+                        panel:    '#13171f',
+                        'panel-2':'#181d27',
+                        line:     '#232a35',
+                        'line-2': '#323a47',
+                        fg:       '#e9ebf0',
+                        muted:    '#9aa1ad',
+                        faint:    '#646c79',
+                        accent:   '#4ec9b4',
+                        'accent-soft': '#74dac8',
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'system-ui', 'sans-serif'],
+                        mono: ['"IBM Plex Mono"', 'ui-monospace', 'monospace'],
+                    },
+                    letterSpacing: { eyebrow: '0.18em' },
+                },
+            },
+        }
+    </script>
+    <style type="text/tailwindcss">
+        @layer base {
+            body {
+                @apply bg-ink text-fg font-sans;
+                background-image:
+                    radial-gradient(900px 480px at 82% -10%, rgba(78,201,180,0.06), transparent 60%),
+                    radial-gradient(640px 380px at -5% 0%, rgba(78,201,180,0.04), transparent 55%);
+                background-attachment: fixed;
+            }
+            ::selection { background: rgba(78,201,180,0.25); color: #fff; }
+            ::-webkit-scrollbar { width: 11px; height: 11px; }
+            ::-webkit-scrollbar-track { background: #0a0c10; }
+            ::-webkit-scrollbar-thumb { background: #232a35; border-radius: 999px; border: 3px solid #0a0c10; }
+            ::-webkit-scrollbar-thumb:hover { background: #323a47; }
+        }
+        @layer components {
+            .eyebrow { @apply font-mono text-[11px] uppercase tracking-eyebrow text-faint; }
+            .panel { @apply bg-panel border border-line rounded-lg; }
+            .field-label { @apply block font-mono text-[11px] uppercase tracking-[0.12em] text-faint mb-2; }
+            .field {
+                @apply w-full bg-ink-2 border border-line rounded-md px-3.5 py-2.5 text-sm text-fg placeholder-faint
+                       focus:border-accent/60 focus:ring-2 focus:ring-accent/15 outline-none transition-colors;
+            }
+            .btn-accent {
+                @apply inline-flex items-center justify-center gap-2 bg-accent text-ink font-semibold rounded-md
+                       px-5 py-2.5 text-sm hover:bg-accent-soft transition-colors
+                       focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent/40 focus-visible:ring-offset-2 focus-visible:ring-offset-ink;
+            }
+            .btn-ghost {
+                @apply inline-flex items-center justify-center gap-2 border border-line text-muted hover:text-fg hover:border-line-2
+                       font-medium rounded-md px-5 py-2.5 text-sm transition-colors;
+            }
+            .stat-num { @apply font-mono font-semibold tracking-tight text-fg; }
+            .nav-item {
+                @apply flex items-center gap-3 px-3 py-2.5 rounded-md text-sm font-medium text-muted
+                       hover:text-fg hover:bg-white/[0.04] transition-colors;
+            }
+            .nav-item-active {
+                @apply flex items-center gap-3 px-3 py-2.5 rounded-md text-sm font-semibold text-accent
+                       bg-accent/[0.08] ring-1 ring-inset ring-accent/20;
+            }
+            .table-head { @apply font-mono text-[10px] uppercase tracking-[0.14em] text-faint font-medium text-left px-6 py-3; }
+            .risk-pill { @apply inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium ring-1 ring-inset; }
+        }
+    </style>
+</head>
+<body>
+
+{% if "user" in session %}
+<div class="flex min-h-screen">
+
+    <!-- Sidebar -->
+    <aside class="w-64 shrink-0 bg-ink-2 border-r border-line flex flex-col fixed inset-y-0 left-0 z-20">
+
+        <!-- Brand -->
+        <div class="px-5 h-16 flex items-center border-b border-line">
+            <a href="/dashboard" class="flex items-center gap-2.5">
+                <span class="flex h-8 w-8 items-center justify-center rounded-md bg-accent/10 text-accent ring-1 ring-inset ring-accent/20">
+                    <svg viewBox="0 0 24 24" class="h-[18px] w-[18px]" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+                        <circle cx="11" cy="11" r="6.5"></circle><circle cx="11" cy="11" r="2.2"></circle><path d="M16 16 20.5 20.5"></path>
+                    </svg>
+                </span>
+                <span class="leading-none">
+                    <span class="block text-[15px] tracking-tight"><span class="font-semibold text-fg">Skin</span><span class="font-semibold text-accent">Cancel</span></span>
+                    <span class="block font-mono text-[10px] uppercase tracking-[0.14em] text-faint mt-1">Detection System</span>
+                </span>
+            </a>
+        </div>
+
+        <!-- Navigation -->
+        <nav class="flex-1 px-3 py-5 space-y-1">
+            <p class="eyebrow px-3 pb-2">Workspace</p>
+            <a href="/dashboard" class="{% if request.path == '/dashboard' %}nav-item-active{% else %}nav-item{% endif %}">
+                <i class="fas fa-chart-line w-4 text-center text-[13px]"></i><span>Dashboard</span>
+            </a>
+            <a href="/predict" class="{% if request.path == '/predict' %}nav-item-active{% else %}nav-item{% endif %}">
+                <i class="fas fa-microscope w-4 text-center text-[13px]"></i><span>New Analysis</span>
+            </a>
+            <a href="/patients" class="{% if request.path == '/patients' %}nav-item-active{% else %}nav-item{% endif %}">
+                <i class="fas fa-folder-open w-4 text-center text-[13px]"></i><span>Patients</span>
+            </a>
+        </nav>
+
+        <!-- User -->
+        <div class="px-3 py-4 border-t border-line">
+            <div class="flex items-center justify-between rounded-md px-2 py-2 hover:bg-white/[0.03] transition-colors">
+                <div class="flex items-center gap-2.5 min-w-0">
+                    <div class="h-8 w-8 shrink-0 rounded-md bg-accent/10 text-accent ring-1 ring-inset ring-accent/20 flex items-center justify-center font-mono text-sm font-semibold">
+                        {{ session.user[0].upper() }}
+                    </div>
+                    <div class="min-w-0">
+                        <p class="text-sm font-medium text-fg truncate">{{ session.user }}</p>
+                        <p class="text-[11px] text-faint">Clinician</p>
+                    </div>
+                </div>
+                <a href="/logout" title="Sign out" class="text-faint hover:text-red-400 transition-colors px-1.5">
+                    <i class="fas fa-arrow-right-from-bracket text-sm"></i>
+                </a>
+            </div>
+        </div>
+    </aside>
+
+    <!-- Main -->
+    <main class="flex-1 ml-64 min-w-0">
+
+        <!-- Flash messages -->
+        {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+        <div class="px-8 pt-6 space-y-2.5">
+            {% for category, message in messages %}
+            <div class="flash-message flex items-start gap-3 px-4 py-3 rounded-md text-sm ring-1 ring-inset
+                {% if category == 'success' %}bg-emerald-500/10 text-emerald-300 ring-emerald-500/25
+                {% elif category == 'error'   %}bg-red-500/10   text-red-300   ring-red-500/25
+                {% elif category == 'warning' %}bg-amber-500/10 text-amber-300 ring-amber-500/25
+                {% else %}bg-accent/10 text-accent-soft ring-accent/25{% endif %}">
+                <i class="mt-0.5 fas
+                   {% if category == 'success' %}fa-circle-check
+                   {% elif category == 'error'   %}fa-circle-exclamation
+                   {% elif category == 'warning' %}fa-triangle-exclamation
+                   {% else %}fa-circle-info{% endif %}"></i>
+                <span>{{ message }}</span>
+            </div>
+            {% endfor %}
+        </div>
+        {% endif %}
+        {% endwith %}
+
+        {% block content %}{% endblock %}
+    </main>
+</div>
+
+{% else %}
+    {% block auth_content %}{% endblock %}
+{% endif %}
+
+<script>
+    // Auto-hide flash messages
+    setTimeout(() => {
+        document.querySelectorAll('.flash-message').forEach(f => {
+            f.style.transition = 'opacity .4s ease';
+            f.style.opacity = '0';
+            setTimeout(() => f.style.display = 'none', 400);
+        });
+    }, 5000);
+</script>
+</body>
+</html>

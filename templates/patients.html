@@ -1,0 +1,77 @@
+{% extends "base.html" %}
+{% block title %}Patients — SkinCancel{% endblock %}
+
+{% block content %}
+<div class="px-8 py-8">
+
+    <header class="flex flex-wrap items-end justify-between gap-4 border-b border-line pb-6">
+        <div>
+            <p class="eyebrow mb-2">Registry</p>
+            <h1 class="text-2xl font-semibold tracking-tight text-fg">Patients</h1>
+            <p class="text-sm text-muted mt-1.5">
+                <span class="font-mono text-fg">{{ patients|length }}</span> total record{{ '' if patients|length == 1 else 's' }} on file.
+            </p>
+        </div>
+        <a href="/predict" class="btn-accent">
+            <i class="fas fa-plus text-xs"></i> New analysis
+        </a>
+    </header>
+
+    <div class="panel overflow-hidden mt-8">
+    {% if patients %}
+        <div class="overflow-x-auto">
+            <table class="w-full">
+                <thead>
+                    <tr class="border-b border-line">
+                        {% for col in ["#", "Patient", "Age", "Diagnosis", "Risk Level", "Confidence", "Date", ""] %}
+                        <th class="table-head {% if col == '' %}text-right{% endif %}">{{ col }}</th>
+                        {% endfor %}
+                    </tr>
+                </thead>
+                <tbody class="divide-y divide-line/70">
+                    {% for p in patients %}
+                    <tr class="hover:bg-white/[0.02] transition-colors">
+                        <td class="px-6 py-4 text-sm font-mono text-faint">{{ p.id }}</td>
+                        <td class="px-6 py-4 text-sm font-medium text-fg">{{ p.name }}</td>
+                        <td class="px-6 py-4 text-sm font-mono text-muted">{{ p.age }}</td>
+                        <td class="px-6 py-4 text-sm text-muted">{{ p.diagnosis }}</td>
+                        <td class="px-6 py-4">
+                            <span class="risk-pill
+                                {% if p.risk_level == 'Malignant' %}bg-red-500/10 text-red-300 ring-red-500/25
+                                {% elif p.risk_level == 'Pre-malignant' %}bg-amber-500/10 text-amber-300 ring-amber-500/25
+                                {% else %}bg-emerald-500/10 text-emerald-300 ring-emerald-500/25{% endif %}">
+                                <span class="h-1.5 w-1.5 rounded-full bg-current"></span>{{ p.risk_level }}
+                            </span>
+                        </td>
+                        <td class="px-6 py-4 text-sm font-mono text-fg">{{ p.confidence }}%</td>
+                        <td class="px-6 py-4 text-xs font-mono text-faint">{{ p.created_at.strftime('%b %d, %Y') }}</td>
+                        <td class="px-6 py-4">
+                            <div class="flex items-center justify-end gap-1">
+                                <a href="/result/{{ p.id }}" title="View result"
+                                   class="h-8 w-8 inline-flex items-center justify-center rounded-md text-faint hover:text-accent hover:bg-white/[0.04] transition-colors">
+                                    <i class="fas fa-eye text-sm"></i>
+                                </a>
+                                <a href="/patients/{{ p.id }}/pdf" title="Download PDF"
+                                   class="h-8 w-8 inline-flex items-center justify-center rounded-md text-faint hover:text-fg hover:bg-white/[0.04] transition-colors">
+                                    <i class="fas fa-file-pdf text-sm"></i>
+                                </a>
+                            </div>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    {% else %}
+        <div class="px-6 py-20 text-center">
+            <div class="mx-auto mb-4 flex h-12 w-12 items-center justify-center rounded-lg border border-line bg-ink-2 text-faint">
+                <i class="fas fa-folder-open text-lg"></i>
+            </div>
+            <p class="text-base font-medium text-fg">No patients yet</p>
+            <p class="text-sm text-muted mt-1">Records will appear here once you run an analysis.</p>
+            <a href="/predict" class="btn-accent mt-6">Start first analysis</a>
+        </div>
+    {% endif %}
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,100 @@
+{% extends "base.html" %}
+{% block title %}Dashboard — SkinCancel{% endblock %}
+
+{% block content %}
+<div class="px-8 py-8">
+
+    <header class="flex flex-wrap items-end justify-between gap-4 border-b border-line pb-6">
+        <div>
+            <p class="eyebrow mb-2">Overview</p>
+            <h1 class="text-2xl font-semibold tracking-tight text-fg">Dashboard</h1>
+            <p class="text-sm text-muted mt-1.5">A snapshot of detection activity across the clinic.</p>
+        </div>
+        <a href="/predict" class="btn-accent">
+            <i class="fas fa-plus text-xs"></i> New analysis
+        </a>
+    </header>
+
+    <!-- Stat cards -->
+    <section class="grid grid-cols-1 sm:grid-cols-3 gap-px bg-line border border-line rounded-lg overflow-hidden mt-8">
+        <div class="bg-panel p-6">
+            <div class="flex items-start justify-between">
+                <p class="eyebrow">Total patients</p>
+                <i class="fas fa-users text-faint text-sm"></i>
+            </div>
+            <p class="stat-num text-4xl mt-4">{{ total }}</p>
+            <p class="text-xs text-faint mt-2">Records in registry</p>
+        </div>
+        <div class="bg-panel p-6">
+            <div class="flex items-start justify-between">
+                <p class="eyebrow">Malignant cases</p>
+                <i class="fas fa-triangle-exclamation text-red-400/70 text-sm"></i>
+            </div>
+            <p class="stat-num text-4xl mt-4 text-red-300">{{ malignant }}</p>
+            <p class="text-xs text-faint mt-2">Flagged for follow-up</p>
+        </div>
+        <div class="bg-panel p-6">
+            <div class="flex items-start justify-between">
+                <p class="eyebrow">Benign cases</p>
+                <i class="fas fa-circle-check text-emerald-400/70 text-sm"></i>
+            </div>
+            <p class="stat-num text-4xl mt-4 text-emerald-300">{{ benign }}</p>
+            <p class="text-xs text-faint mt-2">Cleared on analysis</p>
+        </div>
+    </section>
+
+    <!-- Recent analyses -->
+    <section class="mt-10">
+        <div class="flex items-center justify-between mb-4">
+            <h2 class="text-sm font-semibold text-fg tracking-tight">Recent analyses</h2>
+            <span class="eyebrow">Last 5</span>
+        </div>
+
+        <div class="panel overflow-hidden">
+        {% if recent %}
+            <div class="overflow-x-auto">
+                <table class="w-full">
+                    <thead>
+                        <tr class="border-b border-line">
+                            <th class="table-head">Patient</th>
+                            <th class="table-head">Age</th>
+                            <th class="table-head">Diagnosis</th>
+                            <th class="table-head">Risk</th>
+                            <th class="table-head">Confidence</th>
+                            <th class="table-head">Date</th>
+                        </tr>
+                    </thead>
+                    <tbody class="divide-y divide-line/70">
+                        {% for p in recent %}
+                        <tr class="hover:bg-white/[0.02] transition-colors">
+                            <td class="px-6 py-4 text-sm font-medium text-fg">{{ p.name }}</td>
+                            <td class="px-6 py-4 text-sm font-mono text-muted">{{ p.age }}</td>
+                            <td class="px-6 py-4 text-sm text-muted">{{ p.diagnosis }}</td>
+                            <td class="px-6 py-4">
+                                <span class="risk-pill
+                                    {% if p.risk_level == 'Malignant' %}bg-red-500/10 text-red-300 ring-red-500/25
+                                    {% elif p.risk_level == 'Pre-malignant' %}bg-amber-500/10 text-amber-300 ring-amber-500/25
+                                    {% else %}bg-emerald-500/10 text-emerald-300 ring-emerald-500/25{% endif %}">
+                                    <span class="h-1.5 w-1.5 rounded-full bg-current"></span>{{ p.risk_level }}
+                                </span>
+                            </td>
+                            <td class="px-6 py-4 text-sm font-mono text-fg">{{ p.confidence }}%</td>
+                            <td class="px-6 py-4 text-xs font-mono text-faint">{{ p.created_at.strftime('%b %d, %Y') }}</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        {% else %}
+            <div class="px-6 py-16 text-center">
+                <div class="mx-auto mb-4 flex h-11 w-11 items-center justify-center rounded-lg border border-line bg-ink-2 text-faint">
+                    <i class="fas fa-folder-open"></i>
+                </div>
+                <p class="text-sm text-muted">No analyses yet.</p>
+                <a href="/predict" class="btn-accent mt-5">Run your first analysis</a>
+            </div>
+        {% endif %}
+        </div>
+    </section>
+</div>
+{% endblock %}
